@@ -2,6 +2,7 @@
 
 A simple and customizable Date Picker that utilizes UIPickerView. Written in Swift.
 
+
 ## Installation
 
 Add the source file (FxDatePicker.swift) into your project.
@@ -33,7 +34,22 @@ When assigning the any view into input view of a text field, the text field over
 
 	datePicker.bgColor = UIColor.blackColor();
 
-For now, this date picker only supports dates but I will be adding Time mode and DateAndTime mode very soon.
+For changing picker mode from date to time, change the mode property to Time:
+
+	datePicker.mode = FxDatePickerMode.Time
+
+Available Enumerations (more coming soon):
+	
+	FxDatePickerMode {
+		case Date
+		case Time
+	}
+	
+The AM/PM part of the date picker is based on the locale property of the date picker. If you need to force the locale, change the locale property like below:
+
+	datePicker.locale = NSLocale(localeIdentifer: "en_US_POSIX");
+	
+*The locale is very partially supported in this version but over time I will adapt localization more and more until the date picker fully supports it.*
 
 ### Delegate
 
@@ -59,11 +75,15 @@ First argument is the date picker that the event is triggered from; and the seco
 		}
 		
 	}
+	
+## UPDATE
+
+ - [01/19] Lots of design changes - Rewrote the codebase to be more clean, robust, and modular. Added Time Picker. For future releases I will be adopting localization more and more; eventually the library will have a full localization support.
 
 ## Future Plans (in order)
 
-- Add Time Picker
-- More customizations: 12 hour or 24 hour time; selected row font and colors; DatePicker modes
+- ~~Add Time Picker~~
+- More customizations: Selected row font and colors
 - Add Date and Time Picker together
 - Date boundaries
 
