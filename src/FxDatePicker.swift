@@ -232,6 +232,8 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
     
     var bgColor : UIColor! = nil;
     var font : UIFont = UIFont.systemFontOfSize(UIFont.systemFontSize());
+    var selectedFont : UIFont! = nil;
+    var selectedTextColor : UIColor! = nil;
     var textColor : UIColor = UIColor.blackColor();
     var mode : FxDatePickerMode = FxDatePickerMode.Date;
     var locale : NSLocale = NSLocale.systemLocale();
@@ -301,21 +303,32 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        print("Count: \(self.component.getPickerItems()[component].count)");
         return self.component.getPickerItems()[component].count;
     }
     
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+    func getAttributedString(row: Int, inComponent: Int) -> NSAttributedString {
         
-        //let selectedRow = pickerView.selectedRowInComponent(component);
-        var attributes : [String : AnyObject] = [:];
+        let selectedRow = self.pickerView.selectedRowInComponent(inComponent);
         
-        attributes = [
+        var font : UIFont = self.font;
+        var textColor : UIColor = self.textColor
+        if selectedRow == row {
+            if let selectedTextColor = self.selectedTextColor {
+                textColor = selectedTextColor;
+            }
+            
+            if let selectedFont = self.selectedFont {
+                font = selectedFont;
+            }
+        }
+        
+        let attributes = [
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: textColor
         ];
+
         
-        return NSAttributedString(string: self.component.getPickerItems()[component][row], attributes: attributes);
+        return NSAttributedString(string: self.component.getPickerItems()[inComponent][row], attributes: attributes);
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -329,12 +342,26 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
         for var i = 0; i < vals.count; ++i {
             if vals[i] != values[i] {
                 pickerView.selectRow(vals[i], inComponent: i, animated: true);
+                pickerView.reloadComponent(i);
             }
         }
+        
+        pickerView.reloadComponent(component);
         
         let date = self.component.toDate();
         
         delegate.dateSelected(self, date: date);
+    }
+    
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+        var label = view as! UILabel!;
+        if label == nil {
+            label = UILabel();
+            label.backgroundColor = UIColor.clearColor()
+            label.textAlignment = NSTextAlignment.Center;
+        }
+        label.attributedText = self.getAttributedString(row, inComponent: component);
+        return label;
     }
     
     

@@ -24,11 +24,15 @@ Create FxDatePicker object and assign it to the inputView:
 	
 ### Customizations
 
-At this moment, one can change the text color, background color, and font of the date picker:
+In order to change the default font and the text color change the `font` and `textColor` properties, respectively:
 
 	datePicker.textColor = UIColor.whiteColor();
-	datePicker.font = UIFont(name: "Oxygen", size: 14.0);
-	datePicker.backgroundColor = UIColor.blackColor();
+	datePicker.font = UIFont(name: "HelveticaNeue", size: 14.0);
+
+There is also support for changing font for the selected row. The properties are `selectedFont` and `selectedTextColor`:
+
+	datePicker.selectedTextColor = UIColor.redColor();
+	datePicker.selectedFont = UIFont(name: "HelveticaNeue-Bold", 16.0);
 	
 When assigning the any view into input view of a text field, the text field overrides the `backgroundColor` property of the view. Therefore, I added a `bgColor` property for this case:
 
@@ -63,15 +67,20 @@ First argument is the date picker that the event is triggered from; and the seco
 	
 		override func viewDidLoad() {
 			var datePicker = FxDatePicker();
-			datePicker.textColor = UIColor.whiteColor();
 			datePicker.bgColor = UIColor.blackColor();
-			datePicker.font = UIFont(name: "Oxygen", size: 14.0);
+
+			datePicker.font = UIFont(name: "HelveticaNeue", size: 14.0);
+			datePicker.textColor = UIColor.whiteColor();
+			datePicker.selectedTextColor = UIColor.redColor();
+			datePicker.selectedFont = UIFont(name: "HelveticaNeue-Bold", 16.0);
+
 			datePicker.delegate = self;
+
 			textField.inputView = datePicker;
 		}
 		
 		func dateSelected(datePicker: FxDatePicker!, date: NSDate!) {
-			println(date);
+			print(date);
 		}
 		
 	}
@@ -79,17 +88,18 @@ First argument is the date picker that the event is triggered from; and the seco
 ## UPDATE
 
  - [01/19] Lots of design changes - Rewrote the codebase to be more clean, robust, and modular. Added Time Picker. For future releases I will be adopting localization more and more; eventually the library will have a full localization support.
+ - [10/30] Code refactored to work with Swift 2.0. Added customizations for selected row and font colors.
 
 ## Future Plans (in order)
 
 - ~~Add Time Picker~~
-- More customizations: Selected row font and colors
+- ~~More customizations: Selected row font and colors~~
 - Add Date and Time Picker together
 - Date boundaries
 
 ## Author
 
-[Gasim Gasimzada](http://www.gasimzada.net)
+[Gasim Gasimzada](http://www.gasimzada.me)
 
 ## License
 FxDatePicker is available under MIT license. See the LICENSE file for more info.
