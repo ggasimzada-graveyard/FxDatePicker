@@ -1,9 +1,7 @@
 //
 //  FxDatePicker.swift
-//  Goals
 //
 //  Created by Gasim on 1/14/15.
-//  Copyright (c) 2015 Gasimzada.Net. All rights reserved.
 //
 
 import UIKit
@@ -28,13 +26,13 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
         var order : [String: Int] = [:];
         
         init() {
-            self.calendar = NSCalendar();
+            self.calendar = NSCalendar.currentCalendar();
             self.components = NSDateComponents();
         }
         
         init(calendar : NSCalendar, order : [String : Int]) {
             self.calendar = calendar;
-            self.components = calendar.components(NSCalendarUnit.YearCalendarUnit | NSCalendarUnit.MonthCalendarUnit | NSCalendarUnit.DayCalendarUnit | NSCalendarUnit.HourCalendarUnit | NSCalendarUnit.MinuteCalendarUnit, fromDate: NSDate());
+            self.components = calendar.components([.Year, .Month, .Day, .Hour, .Minute], fromDate: NSDate());
             self.order = order;
         }
         
@@ -64,11 +62,11 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
             super.init(calendar: calendar, order: order);
             if(format.containsString("a")) {
                 pickerItems = [[String]](count: 3, repeatedValue: []);
-                pickerItems[order["hour"]!] = populateHours(ampm: true);
+                pickerItems[order["hour"]!] = populateHours(true);
                 pickerItems[order["ampm"]!] = populateAmPm();
             } else {
                 pickerItems = [[String]](count: 2, repeatedValue: []);
-                pickerItems[order["hour"]!] = populateHours(ampm: false);
+                pickerItems[order["hour"]!] = populateHours(false);
             }
 
             pickerItems[order["minute"]!] = populateMinutes();
@@ -121,7 +119,7 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
             return 0;
         }
         
-        func populateHours(var ampm : Bool = true) -> [String] {
+        func populateHours(ampm : Bool = true) -> [String] {
             var hours : [String] = [];
             if ampm {
                 for var i = 1; i <= 12; ++i {
@@ -188,12 +186,12 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
             components.month = values[order["month"]!] + 1;
             var vals = values;
             if !components.isValidDateInCalendar(calendar) {
-                var correct = NSDateComponents();
+                let correct = NSDateComponents();
                 correct.month = components.month + 1;
                 correct.day = 0;
                 correct.year = components.year;
-                var date = calendar.dateFromComponents(correct)!;
-                var correctDay = calendar.component(NSCalendarUnit.CalendarUnitDay, fromDate: date);
+                let date = calendar.dateFromComponents(correct)!;
+                let correctDay = calendar.component(.Day, fromDate: date);
                 vals[order["day"]!] = correctDay - 1;
                 components.day = correctDay;
             }
@@ -224,7 +222,7 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
     }
     
     private var pickerView : UIPickerView = UIPickerView();
-    private var calendar : NSCalendar = NSCalendar(identifier: NSGregorianCalendar)!;
+    private var calendar : NSCalendar = NSCalendar(identifier: NSCalendarIdentifierGregorian)!;
     private var components : [[String]] = [];
     private var types : [String] = [];
     
@@ -270,16 +268,14 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
         initialize();
     }
     
-    override init() {
-        super.init();
-        initialize();
-        self.frame = CGRect(x: 0, y: 0, width: 420, height: 216);
+    init() {
+        super.init(frame: CGRect(x: 0, y: 0, width: 420, height: 216));
     }
 
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-        initialize();
+        super.init(coder: aDecoder)!;
         self.frame = CGRect(x: 0, y: 0, width: 420, height: 216);
+        initialize();
     }
     
     override func drawRect(rect: CGRect) {
@@ -308,7 +304,7 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
     
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         
-        var attributes : [String : AnyObject!] = [
+        let attributes : [String : AnyObject!] = [
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: textColor
         ];
@@ -330,7 +326,7 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
             }
         }
         
-        var date = self.component.toDate();
+        let date = self.component.toDate();
         
         delegate.dateSelected(self, date: date);
 
