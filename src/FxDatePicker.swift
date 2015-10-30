@@ -240,7 +240,6 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
         
         calendar.locale = self.locale;
         
-        
         switch(mode) {
             case FxDatePickerMode.Date:
                component = DateComponent(calendar: calendar, order: ["month": 0, "day": 1, "year": 2]);
@@ -269,12 +268,15 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
     }
     
     init() {
-        super.init(frame: CGRect(x: 0, y: 0, width: 420, height: 216));
+        let width = UIScreen.mainScreen().bounds.width;
+        super.init(frame: CGRect(x: 0, y: 0, width: width, height: 216));
+        initialize();
     }
 
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!;
-        self.frame = CGRect(x: 0, y: 0, width: 420, height: 216);
+        let width = UIScreen.mainScreen().bounds.width;
+        self.frame = CGRect(x: 0, y: 0, width: width, height: 216);
         initialize();
     }
     
@@ -299,12 +301,16 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        print("Count: \(self.component.getPickerItems()[component].count)");
         return self.component.getPickerItems()[component].count;
     }
     
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         
-        let attributes : [String : AnyObject!] = [
+        //let selectedRow = pickerView.selectedRowInComponent(component);
+        var attributes : [String : AnyObject] = [:];
+        
+        attributes = [
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: textColor
         ];
@@ -329,8 +335,8 @@ class FxDatePicker: UIView, UIPickerViewDelegate, UIPickerViewDataSource, FxDate
         let date = self.component.toDate();
         
         delegate.dateSelected(self, date: date);
-
     }
+    
     
     func dateSelected(datePicker: FxDatePicker!, date: NSDate!) {
         return;
